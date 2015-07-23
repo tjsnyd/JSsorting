@@ -7,7 +7,7 @@ function sortObj(message, time){
 
 
 // 1: MergeSort
-var mergeSort = function(arr){
+function mergeSort(arr){
     var sort = function(arr){
         var middle = Math.floor(arr.length / 2);
         var leftSub = arr.slice(0,middle);
@@ -40,7 +40,7 @@ var mergeSort = function(arr){
 
 // 2: BubbleSort
 
-var bubbleSort = function(arr){
+function bubbleSort(arr){
     var length = arr.length;
     for(var i = 0; i < length; i++){
         for(var k = 0; k < length - 1; k++){
@@ -69,87 +69,49 @@ var bubbleSortO = function(arr,func){
 
 //MyQuicksort
 //with random pivot
-var quickSortR = function(arr){
-    var len = arr.length;
-    var part = function(arr,left,right){
-        var temp;
-        var i = left;
-        var j = right;
-        var pivot = arr[(left+right)/2];
-        while(i<=j){
-            while(arr[i]<pivot){
-                i++;
-            }
-            while(arr[j] > pivot){
-                j--;
-            }
-            if(i<=j) {
-                temp= arr[i];
-                arr[i] = arr[j];
-                arr[j] = temp;
-                i++;
-                j--;
-            }
-        }
-        return i;
-    };
-    var sort = function(arr, left, right){
-        var index = part(arr,left,right);
-        if(left < index - 1){
-            sort(arr,left,index-1);
-        }
-        if(index < right){
-            sort(arr,index,right);
-        }
+function quickSortR(arr){
+    len = arr.length;
+    if(len === 0){
         return arr;
-    };
+    }
     
-    return sort(arr,0,len-1);
+    var left = [];
+    var right = [];
+    var pivot = arr[Math.floor(Math.random() * len)];
     
+    for(var i = 0; i < len - 1; i++){
+        if(arr[i] < pivot) {
+            left.push(arr[i]);
+        }else{
+            right.push(arr[i]);
+        }
+    }
+    return quickSortL(left).concat(pivot, quickSortL(right));
 }
 
 //pivot always at first index
-var quickSort = function(arr){
-    var len = arr.length;
-    var part = function(arr,left,right){
-        var temp;
-        var i = left;
-        var j = right;
-        var pivot = arr[(left+right)/2];
-        while(i<=j){
-            while(arr[i]<pivot){
-                i++;
-            }
-            while(arr[j] > pivot){
-                j--;
-            }
-            if(i<=j) {
-                temp= arr[i];
-                arr[i] = arr[j];
-                arr[j] = temp;
-                i++;
-                j--;
-            }
-        }
-        return i;
-    };
-    var sort = function(arr, left, right){
-        var index = part(arr,left,right);
-        if(left < index - 1){
-            sort(arr,left,index-1);
-        }
-        if(index < right){
-            sort(arr,index,right);
-        }
+function quickSort(arr){
+    len = arr.length;
+    if(len === 0){
         return arr;
-    };
+    }
     
-    return sort(arr,0,len-1);
+    var left = [];
+    var right = [];
+    var pivot = arr[len/2 / 1];
     
+    for(var i = 0; i < len - 1; i++){
+        if(arr[i] < pivot) {
+            left.push(arr[i]);
+        }else{
+            right.push(arr[i]);
+        }
+    }
+    return quickSortL(left).concat(pivot, quickSortL(right));
 }
 
 //pivot always at last index
-var quickSortL = function(arr){
+function quickSortL(arr){
     len = arr.length;
     if(len === 0){
         return arr;
@@ -171,7 +133,7 @@ var quickSortL = function(arr){
 
 
 //My InsertionSort
-var insertSort = function(arr){
+function insertSort(arr){
     var len = arr.length;
     var x;
     var j;
@@ -189,7 +151,7 @@ var insertSort = function(arr){
 
 //Borrowed Heapsort from mgechev
 
-var heapSort = (function () {
+var heapSort = (function() {
     function heapify(array, index, heapSize) {
         var left = 2 * index + 1,
             right = 2 * index + 2,
@@ -247,22 +209,32 @@ var average = function(arr){
         return arr.reduce(function(a, b) { return a + b; }) / (arr.length || 1);
 };
 
+function getFnName(fn) {
+  var f = typeof fn == 'function';
+  var s = f && ((fn.name && ['', fn.name]) || fn.toString().match(/function ([^\(]+)/));
+  return (!f && 'not a function') || (s && s[1] || 'anonymous');
+};
 
 var timeCheck = function(func, arr){
     var start;
     var end;
     var sortA;
     if(func === 0){
+        //console.log("default: " + arr);
         start = performance.now();
         arr.sort();
         end = performance.now();
+        //console.log("after default: " + arr);
         return end - start;
     }
     else{
+        //console.log("before " +getFnName(func) + ": " +arr);
         start = performance.now();
         func(arr);
         end = performance.now();
+        //console.log("after " + getFnName(func) + ": " +arr);
         return end - start;
+        
     }
 }
 
@@ -273,27 +245,14 @@ var testAvgSortTime = function(arrSize){
     
     //test all of the sorts, build return array sytax is [merge,ins,q,qr,ql,b,d]
     
-    //results.push(timeCheck(mergeSort,a));
-    results.push(0);
-    //results.push(timeCheck(insertSort,a));
-    results.push(0);
-    console.log(a);
-    results.push(timeCheck(quickSort,a));
-    
-    console.log(a);
-    results.push(timeCheck(quickSort,a));
-    
-    //results.push(timeCheck(quickSortL,a));
-    console.log(a);
-    //results.push(timeCheck(bubbleSort,a));
-    results.push(0);
-    results.push(0);
-    //results.push(0);
-    
-    results.push(timeCheck(heapSort,a));
-    console.log(a);
+    results.push(timeCheck(mergeSort,a.slice(0)));
+    results.push(timeCheck(insertSort,a.slice(0)));
+    results.push(timeCheck(quickSort,a.slice(0)));
+    results.push(timeCheck(quickSortR,a.slice(0)));
+    results.push(timeCheck(quickSortL,a.slice(0)));
+    results.push(timeCheck(bubbleSort,a.slice(0)));
+    results.push(timeCheck(heapSort,a.slice(0)));
     results.push(timeCheck(0,a));
-    console.log(a);
     return results;
 };
 
@@ -318,8 +277,10 @@ var testSorts = function(arrSize, numTimes){
     
     var results;
     
-    for(var x = 0; x < numTimes - 1; x++){
+    for(var x = 0; x < numTimes; x++){
+        
         results = testAvgSortTime(arrSize);
+        
         merge.push(results[0]);
         insert.push(results[1]);
         quick.push(results[2]);
@@ -331,22 +292,20 @@ var testSorts = function(arrSize, numTimes){
        
     };
     results = [average(merge), average(insert), average(quick), average(quickR), average(quickL), average(bubble), average(heap), average(jsSort)];
-    //results = bubbleSort(results);
+    var m0 = new sortObj("Merge Average Time", results[0]);
+    var m1 = new sortObj("Insert Average Time", results[1]);
+    var m2 = new sortObj("Quick Average Time", results[2]);
+    var m3 = new sortObj("QuickR Average Time", results[3]);
+    var m4 = new sortObj("QuickL Average Time", results[4]);
+    var m5 = new sortObj("Bubble Average Time", results[5]);
+    var m6 = new sortObj("Heap Average Time", results[6]);
+    var m7 = new sortObj("Default Average Time", results[7]);
+    results = [m0,m1,m2,m3,m4,m5,m6,m7];
+    bubbleSortO(results,comp);
     console.log(results);
     
 };
 
-//testSorts(10,2);
-
-var a = makeRandArr(10);
-console.log(a);
-var x = quickSortR(a);
-console.log(a);
-console.log(x);
-
-
-
-
-
+testSorts(5000,1000);
 
 
