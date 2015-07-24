@@ -193,6 +193,49 @@ var heapSort = (function() {
     };
 }());
 
+function myHeapSort(arr){
+    
+    function makeBigHeap(arr){
+        for (var i = Math.floor((arr.length) / 2); i >=0; i -= 1) {
+            siftDown(arr, arr.length, i);
+        }
+        return arr;
+    }
+    
+    function siftDown(arr, len, i){
+        left = 2 * i;
+        right = 2 * i + 1;
+        var largest = i;
+        if(left <= len && a[left] > a[i]){
+            largest = left;
+        }
+        if(right <= len && a[right] > a[largest]){
+            largest = right;
+        }
+        if(largest !== i){
+            var temp = array[i];
+            array[i] = array[largest];
+            array[largest] = temp;
+            siftDown(array, largest, len);
+        }
+    }
+    
+        var array = arr;
+        var size = array.length,
+            temp;
+        makeBigHeap(array);
+        for (var i = array.length - 1; i > 0; i -= 1) {
+            temp = array[0];
+            array[0] = array[i];
+            array[i] = temp;
+            size -= 1;
+            siftDown(array, 0, size);
+        }
+        return array;
+    
+    
+};
+
 
 
 var makeRandArr = function(count){
@@ -306,6 +349,14 @@ var testSorts = function(arrSize, numTimes){
     
 };
 
-testSorts(5000,1000);
+//testSorts(100000,2);
+var a = [1,2,3,4,5,6,7];//makeRandArr(20);
+console.log(a);
+var x = myHeapSort(a);
+console.log(a);
+console.log(x);
+
+
+
 
 
